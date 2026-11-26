@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { BookOpenText, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { InstallButton } from "@/components/install-button";
 import { getStaff } from "../_lib/auth";
 import { signOut } from "../login/actions";
@@ -9,9 +9,8 @@ import { BottomNav, SideNav } from "./nav";
 function Brand() {
   return (
     <div className="flex items-center gap-2.5">
-      <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-white">
-        <BookOpenText size={17} strokeWidth={1.75} aria-hidden />
-      </span>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/pwa/halaqat/icon/192" alt="" width={32} height={32} className="size-8 rounded-lg" />
       <span className="font-bold">حلقات القرآن</span>
     </div>
   );

@@ -1,16 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #14532d;
-  --color-primary-hover: #166534;
-  --color-primary-soft: #e8f0e9;
+  /* Teal family taken from the app icon (#2bb5a0 -> #0f4c5c gradient). */
+  --color-primary: #0f5e63;
+  --color-primary-hover: #0b4b50;
+  --color-primary-soft: #e2f2ef;
   --color-gold: #a16207;
   --color-gold-soft: #fdf6e3;
-  --color-canvas: #f7f5ef;
+  --color-canvas: #f3f7f6;
   --color-surface: #ffffff;
-  --color-line: #e5e1d6;
-  --color-ink: #1c2b22;
-  --color-muted: #6b7568;
+  --color-line: #dbe5e3;
+  --color-ink: #142a2c;
+  --color-muted: #5d7072;
 
   --color-present: #15803d;
   --color-absent: #b91c1c;

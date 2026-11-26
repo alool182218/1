@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export const viewport: Viewport = { themeColor: "#14532d" };
+export const viewport: Viewport = { themeColor: "#0f5e63" };
 
 export default function HalaqatLayout({ children }: { children: React.ReactNode }) {
   return (

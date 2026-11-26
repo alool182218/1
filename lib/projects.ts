@@ -29,8 +29,8 @@ export const projects: Project[] = [
     name: "حلقات القرآن",
     description: "إدارة الطلاب والحلقات والمعلمين وتسجيل الحضور",
     icon: BookOpenText,
-    color: "#14532d",
-    background: "#f7f5ef",
+    color: "#0f5e63",
+    background: "#f3f7f6",
     appIcon: "halaqat.jpg",
   },
   {
