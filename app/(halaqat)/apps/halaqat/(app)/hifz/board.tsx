@@ -2,17 +2,18 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { Plus, X } from "lucide-react";
-import { GRADE, GRADES, KIND, KINDS, rangeLabel, type Grade, type Recitation, type RecitationKind, type Surah } from "../../_lib/hifz";
+import { GRADE, GRADES, rangeLabel, type Grade, type Recitation, type RecitationKind, type Surah } from "../../_lib/hifz";
 import { ErrorNote, Field, btn, inputCls } from "../../_components/ui";
 import { Submit } from "../../_components/submit";
 import { ConfirmSubmit } from "../../_components/confirm";
 import { addRecitation, deleteRecitation } from "./actions";
 
 type Row = { id: number; name: string };
-/** Where a student's last new memorization ended. */
+/** Where a student's last recitation of this kind ended. */
 export type LastPosition = { surah: number; to_ayah: number };
 
-export function HifzBoard({
+export function RecitationBoard({
+  kind,
   halaqaId,
   day,
   students,
@@ -20,6 +21,7 @@ export function HifzBoard({
   records,
   last,
 }: {
+  kind: RecitationKind;
   halaqaId: number;
   day: string;
   students: Row[];
@@ -54,7 +56,11 @@ export function HifzBoard({
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-bold">{st.name}</p>
                   <p className="truncate text-xs text-muted">
-                    {pos ? `آخر حفظ: ${positionLabel(byId.get(pos.surah), pos.to_ayah)}` : "لا يوجد حفظ مسجّل"}
+                    {pos
+                      ? `${kind === "hifz" ? "آخر حفظ" : "آخر مراجعة"}: ${positionLabel(byId.get(pos.surah), pos.to_ayah)}`
+                      : kind === "hifz"
+                        ? "لا يوجد حفظ مسجّل"
+                        : "لا توجد مراجعة مسجّلة"}
                   </p>
                 </div>
                 {!isOpen && (
@@ -68,7 +74,6 @@ export function HifzBoard({
               {mine.length > 0 && (
                 <ul className="mt-2 flex flex-wrap gap-1.5 pr-9">
                   {mine.map((r) => {
-                    const { icon: Icon, label: kindLabel } = KIND[r.kind];
                     const g = GRADE[r.grade];
                     return (
                       <li
@@ -76,7 +81,6 @@ export function HifzBoard({
                         className="inline-flex items-center gap-1.5 rounded-md border border-line py-0.5 pl-0.5 pr-2 text-xs"
                         title={r.note ?? undefined}
                       >
-                        <Icon size={13} strokeWidth={1.75} className="text-muted" aria-label={kindLabel} />
                         <span>{rangeLabel(byId.get(r.surah), r.from_ayah, r.to_ayah)}</span>
                         <span className={`rounded px-1.5 py-0.5 ${g.soft}`}>{g.label}</span>
                         <form action={deleteRecitation.bind(null, r.id)}>
@@ -96,7 +100,7 @@ export function HifzBoard({
 
               {isOpen && (
                 <RecitationForm
-                  action={addRecitation.bind(null, halaqaId, day, st.id)}
+                  action={addRecitation.bind(null, kind, halaqaId, day, st.id)}
                   surahs={surahs}
                   last={pos}
                   onClose={() => setOpen(null)}
@@ -136,7 +140,6 @@ function RecitationForm({
 }) {
   const [state, formAction] = useActionState(action, undefined);
   const start = suggest(surahs, last);
-  const [kind, setKind] = useState<RecitationKind>("hifz");
   const [surahId, setSurahId] = useState<number>(start.surah);
   const [from, setFrom] = useState(start.from);
   const [to, setTo] = useState("");
@@ -151,30 +154,7 @@ function RecitationForm({
 
   return (
     <form action={formAction} className="mt-3 space-y-3 rounded-lg border border-line bg-canvas p-3 sm:mr-9">
-      <input type="hidden" name="kind" value={kind} />
       <input type="hidden" name="grade" value={grade ?? ""} />
-
-      <div role="radiogroup" aria-label="نوع التسميع" className="inline-grid grid-cols-2 gap-1 rounded-md bg-line/50 p-0.5">
-        {KINDS.map((k) => {
-          const { label, icon: Icon } = KIND[k];
-          const on = kind === k;
-          return (
-            <button
-              key={k}
-              type="button"
-              role="radio"
-              aria-checked={on}
-              onClick={() => setKind(k)}
-              className={`flex h-8 items-center justify-center gap-1.5 rounded px-3 text-xs ${
-                on ? "bg-surface font-bold text-primary shadow-sm" : "text-muted"
-              }`}
-            >
-              <Icon size={14} strokeWidth={1.75} aria-hidden />
-              {label}
-            </button>
-          );
-        })}
-      </div>
 
       <div className="grid gap-3 sm:grid-cols-[1fr_6rem_6rem_auto] sm:items-end">
         <Field label="السورة">

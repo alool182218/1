@@ -3,7 +3,7 @@
 import { refresh } from "next/cache";
 import { getStaff } from "../../_lib/auth";
 import { isIsoDate, today } from "../../_lib/dates";
-import { isGrade, isKind } from "../../_lib/hifz";
+import { isGrade, isKind, type RecitationKind } from "../../_lib/hifz";
 import type { FormState } from "../../_lib/types";
 
 const int = (fd: FormData, k: string) => {
@@ -13,6 +13,7 @@ const int = (fd: FormData, k: string) => {
 
 /** Record one recitation (new memorization or review) for a student. */
 export async function addRecitation(
+  kind: RecitationKind,
   halaqaId: number,
   day: string,
   studentId: number,
@@ -23,14 +24,13 @@ export async function addRecitation(
     return { error: "بيانات غير صالحة." };
   }
 
-  const kind = fd.get("kind");
   const grade = fd.get("grade");
   const surah = int(fd, "surah");
   const from = int(fd, "from_ayah");
   const to = int(fd, "to_ayah");
   const note = String(fd.get("note") ?? "").trim().slice(0, 300) || null;
 
-  if (!isKind(kind)) return { error: "اختر نوع التسميع." };
+  if (!isKind(kind)) return { error: "بيانات غير صالحة." };
   if (!(surah >= 1 && surah <= 114)) return { error: "اختر السورة." };
   if (!(from >= 1) || !(to >= 1)) return { error: "اكتب رقم آية البداية والنهاية." };
   if (to < from) return { error: "آية النهاية يجب أن تكون بعد آية البداية." };

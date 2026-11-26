@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookMarked, BookOpenCheck, CalendarCheck, ChartColumn, UserCog, Users, type LucideIcon } from "lucide-react";
+import { BookMarked, BookOpenCheck, CalendarCheck, ChartColumn, Repeat, UserCog, Users, type LucideIcon } from "lucide-react";
 
 const B = "/apps/halaqat";
 
@@ -11,6 +11,7 @@ type Item = { href: string; label: string; icon: LucideIcon; adminOnly?: boolean
 const ITEMS: Item[] = [
   { href: B, label: "الحضور", icon: CalendarCheck },
   { href: `${B}/hifz`, label: "الحفظ", icon: BookOpenCheck },
+  { href: `${B}/muraja`, label: "المراجعة", icon: Repeat },
   { href: `${B}/students`, label: "الطلاب", icon: Users },
   { href: `${B}/groups`, label: "الحلقات", icon: BookMarked },
   { href: `${B}/reports`, label: "التقارير", icon: ChartColumn },
