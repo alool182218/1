@@ -1,4 +1,4 @@
-import { ListChecks, NotebookPen, type LucideIcon } from "lucide-react";
+import { BookOpenText, ListChecks, NotebookPen, type LucideIcon } from "lucide-react";
 
 export type Project = {
   /** Path segment: the project lives at /apps/<slug> */
@@ -18,6 +18,14 @@ export type Project = {
  * and add an entry here.
  */
 export const projects: Project[] = [
+  {
+    slug: "halaqat",
+    name: "حلقات القرآن",
+    description: "إدارة الطلاب والحلقات والمعلمين وتسجيل الحضور",
+    icon: BookOpenText,
+    color: "#14532d",
+    background: "#f7f5ef",
+  },
   {
     slug: "tasks",
     name: "المهام",
