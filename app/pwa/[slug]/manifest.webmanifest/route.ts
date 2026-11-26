@@ -10,8 +10,8 @@ export async function GET(_req: Request, ctx: RouteContext<"/pwa/[slug]/manifest
   if (!project) return new Response("Not found", { status: 404 });
 
   const path = appPath(project.slug);
-  const icon = (size: number, purpose: string) => ({
-    src: `/pwa/${project.slug}/icon/${size}`,
+  const icon = (size: number, purpose: "any" | "maskable") => ({
+    src: `/pwa/${project.slug}/icon/${purpose === "maskable" ? "m" : ""}${size}`,
     sizes: `${size}x${size}`,
     type: "image/png",
     purpose,
