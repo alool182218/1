@@ -1,7 +1,8 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { CalendarDays, ChevronRight, Phone, Trash2 } from "lucide-react";
+import { BookOpenCheck, CalendarDays, ChevronRight, Phone, Trash2 } from "lucide-react";
+import { GRADE, KIND, rangeLabel, type Recitation, type Surah } from "../../../_lib/hifz";
 import { getStaff } from "../../../_lib/auth";
 import { BASE } from "../../../_lib/supabase";
 import { formatHijri, formatShort } from "../../../_lib/dates";
@@ -21,7 +22,7 @@ async function StudentProfile({ params }: { params: Promise<{ id: string }> }) {
 
   const { supabase, isAdmin } = await getStaff();
 
-  const [{ data: student }, { data: halaqat }, { data: history }] = await Promise.all([
+  const [{ data: student }, { data: halaqat }, { data: history }, { data: recitations }, { data: surahs }] = await Promise.all([
     supabase.from("hq_students").select("*").eq("id", id).maybeSingle<Student>(),
     supabase.from("hq_halaqat").select("id, name").order("name"),
     supabase
@@ -30,7 +31,17 @@ async function StudentProfile({ params }: { params: Promise<{ id: string }> }) {
       .eq("student_id", id)
       .order("day", { ascending: false })
       .limit(400),
+    supabase
+      .from("hq_recitations")
+      .select("id, student_id, day, kind, surah, from_ayah, to_ayah, grade, note")
+      .eq("student_id", id)
+      .order("day", { ascending: false })
+      .order("id", { ascending: false })
+      .limit(30)
+      .returns<Recitation[]>(),
+    supabase.from("hq_surahs").select("id, name, ayahs").returns<Surah[]>(),
   ]);
+  const surahById = new Map((surahs ?? []).map((s) => [s.id, s]));
 
   if (!student) notFound();
 
@@ -125,6 +136,32 @@ async function StudentProfile({ params }: { params: Promise<{ id: string }> }) {
           )}
         </Card>
       </div>
+
+      <Card className="mt-5">
+        <h2 className="border-b border-line px-4 py-3 text-sm font-bold">سجل الحفظ والمراجعة</h2>
+        {!recitations || recitations.length === 0 ? (
+          <Empty icon={BookOpenCheck} title="لا يوجد تسميع مسجّل" />
+        ) : (
+          <ul className="divide-y divide-line">
+            {recitations.map((r) => {
+              const { label: kindLabel, icon: KindIcon } = KIND[r.kind];
+              const g = GRADE[r.grade];
+              return (
+                <li key={r.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2 text-sm">
+                  <span className="w-20 shrink-0 text-xs text-muted">{formatShort(r.day)}</span>
+                  <span className="inline-flex items-center gap-1 text-xs text-muted">
+                    <KindIcon size={13} strokeWidth={1.75} aria-hidden />
+                    {kindLabel}
+                  </span>
+                  <span className="font-bold">{rangeLabel(surahById.get(r.surah), r.from_ayah, r.to_ayah)}</span>
+                  <Badge className={g.soft}>{g.label}</Badge>
+                  {r.note && <span className="text-xs text-muted">{r.note}</span>}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </Card>
     </>
   );
 }
