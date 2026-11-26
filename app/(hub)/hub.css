@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+:root {
+  --hub-bg: #f6f6f7;
+  --hub-surface: #ffffff;
+  --hub-border: #e4e4e7;
+  --hub-text: #18181b;
+  --hub-muted: #71717a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --hub-bg: #0c0c0e;
+    --hub-surface: #16161a;
+    --hub-border: #27272a;
+    --hub-text: #f4f4f5;
+    --hub-muted: #a1a1aa;
+  }
+}
+
+html {
+  font-size: 14px;
+}
+
+body {
+  background: var(--hub-bg);
+  color: var(--hub-text);
+}
