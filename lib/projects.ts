@@ -10,6 +10,12 @@ export type Project = {
   color: string;
   /** Background color of the installed app's splash screen. */
   background: string;
+  /**
+   * Optional square image (file name in assets/icons) used as the installed app's
+   * icon instead of the generated one. Keep the artwork inside the central 80%
+   * so it survives maskable cropping.
+   */
+  appIcon?: string;
 };
 
 /**
@@ -25,6 +31,7 @@ export const projects: Project[] = [
     icon: BookOpenText,
     color: "#14532d",
     background: "#f7f5ef",
+    appIcon: "halaqat.jpg",
   },
   {
     slug: "tasks",
