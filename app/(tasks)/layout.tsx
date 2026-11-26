@@ -6,7 +6,7 @@ const font = Tajawal({ subsets: ["arabic", "latin"], weight: ["400", "500", "700
 
 export const metadata: Metadata = {
   title: "المهام",
-  description: "قائمة مهام مربوطة بقاعدة بيانات Supabase",
+  description: "قائمة مهام محفوظة في قاعدة البيانات",
   manifest: "/pwa/tasks/manifest.webmanifest",
   icons: { icon: "/pwa/tasks/icon/192", apple: "/pwa/tasks/icon/180" },
   appleWebApp: { capable: true, title: "المهام", statusBarStyle: "default" },

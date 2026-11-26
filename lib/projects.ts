@@ -21,7 +21,7 @@ export const projects: Project[] = [
   {
     slug: "tasks",
     name: "المهام",
-    description: "قائمة مهام مربوطة بقاعدة بيانات Supabase",
+    description: "قائمة مهام محفوظة في قاعدة البيانات",
     icon: ListChecks,
     color: "#0f766e",
     background: "#f0fdfa",
@@ -29,7 +29,7 @@ export const projects: Project[] = [
   {
     slug: "notes",
     name: "الملاحظات",
-    description: "ملاحظات سريعة محفوظة على جهازك",
+    description: "ملاحظات سريعة محفوظة في قاعدة البيانات",
     icon: NotebookPen,
     color: "#b45309",
     background: "#1c1917",

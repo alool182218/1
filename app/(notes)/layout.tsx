@@ -6,7 +6,7 @@ const font = Readex_Pro({ subsets: ["arabic", "latin"], weight: ["300", "400", "
 
 export const metadata: Metadata = {
   title: "الملاحظات",
-  description: "ملاحظات سريعة محفوظة على جهازك",
+  description: "ملاحظات سريعة محفوظة في قاعدة البيانات",
   manifest: "/pwa/notes/manifest.webmanifest",
   icons: { icon: "/pwa/notes/icon/192", apple: "/pwa/notes/icon/180" },
   appleWebApp: { capable: true, title: "الملاحظات", statusBarStyle: "black-translucent" },
