@@ -4,6 +4,25 @@ import { useEffect, useState } from "react";
 import { LayoutGrid, MonitorDown } from "lucide-react";
 import { appPath, getProject, projects, type Project } from "@/lib/projects";
 
+/** The project's own artwork when it has one, else its line icon. */
+function ProjectIcon({ project, size, className }: { project: Project; size: number; className?: string }) {
+  if (project.appIcon) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={`/pwa/${project.slug}/icon/192`}
+        alt=""
+        width={size}
+        height={size}
+        className={className}
+        style={{ width: size, height: size }}
+      />
+    );
+  }
+  const Icon = project.icon;
+  return <Icon size={size} strokeWidth={1.75} />;
+}
+
 function readHash() {
   const slug = decodeURIComponent(window.location.hash.slice(1));
   return getProject(slug) ? slug : null;
@@ -48,20 +67,18 @@ function Sidebar({ active, onSelect }: { active: string | null; onSelect: (slug:
 
       <div className="my-1 h-px w-8 bg-[var(--hub-border)]" />
 
-      {projects.map((p) => {
-        const Icon = p.icon;
-        return (
-          <RailButton
-            key={p.slug}
-            label={p.name}
-            color={p.color}
-            selected={active === p.slug}
-            onClick={() => onSelect(p.slug)}
-          >
-            <Icon size={20} strokeWidth={1.75} />
-          </RailButton>
-        );
-      })}
+      {projects.map((p) => (
+        <RailButton
+          key={p.slug}
+          label={p.name}
+          color={p.color}
+          image={!!p.appIcon}
+          selected={active === p.slug}
+          onClick={() => onSelect(p.slug)}
+        >
+          <ProjectIcon project={p} size={p.appIcon ? 32 : 20} className="rounded-md" />
+        </RailButton>
+      ))}
     </nav>
   );
 }
@@ -69,12 +86,15 @@ function Sidebar({ active, onSelect }: { active: string | null; onSelect: (slug:
 function RailButton({
   label,
   color,
+  image,
   selected,
   onClick,
   children,
 }: {
   label: string;
   color?: string;
+  /** Shows full-color artwork: selection is a ring, not a filled background. */
+  image?: boolean;
   selected: boolean;
   onClick: () => void;
   children: React.ReactNode;
@@ -87,11 +107,21 @@ function RailButton({
         aria-current={selected ? "page" : undefined}
         onClick={onClick}
         className={`flex size-10 items-center justify-center rounded-lg transition-colors ${
-          selected
-            ? "text-white"
-            : "text-[var(--hub-muted)] hover:bg-[var(--hub-bg)] hover:text-[var(--hub-text)]"
+          image
+            ? selected
+              ? "ring-2 ring-offset-1"
+              : "opacity-80 hover:opacity-100"
+            : selected
+              ? "text-white"
+              : "text-[var(--hub-muted)] hover:bg-[var(--hub-bg)] hover:text-[var(--hub-text)]"
         }`}
-        style={selected ? { background: color ?? "var(--hub-text)" } : undefined}
+        style={
+          selected
+            ? image
+              ? ({ "--tw-ring-color": color } as React.CSSProperties)
+              : { background: color ?? "var(--hub-text)" }
+            : undefined
+        }
       >
         {children}
       </button>
@@ -113,7 +143,6 @@ function Overview({ onSelect }: { onSelect: (slug: string) => void }) {
 
       <ul className="mt-5 grid gap-3 sm:grid-cols-2">
         {projects.map((p) => {
-          const Icon = p.icon;
           return (
             <li key={p.slug}>
               <button
@@ -121,12 +150,16 @@ function Overview({ onSelect }: { onSelect: (slug: string) => void }) {
                 onClick={() => onSelect(p.slug)}
                 className="flex w-full items-center gap-3 rounded-lg border border-[var(--hub-border)] bg-[var(--hub-surface)] p-3 text-right transition-colors hover:border-[var(--hub-muted)]"
               >
-                <span
-                  className="flex size-9 shrink-0 items-center justify-center rounded-md text-white"
-                  style={{ background: p.color }}
-                >
-                  <Icon size={18} strokeWidth={1.75} />
-                </span>
+                {p.appIcon ? (
+                  <ProjectIcon project={p} size={36} className="shrink-0 rounded-md" />
+                ) : (
+                  <span
+                    className="flex size-9 shrink-0 items-center justify-center rounded-md text-white"
+                    style={{ background: p.color }}
+                  >
+                    <ProjectIcon project={p} size={18} />
+                  </span>
+                )}
                 <span className="min-w-0">
                   <span className="block font-medium">{p.name}</span>
                   <span className="block truncate text-xs text-[var(--hub-muted)]">{p.description}</span>
@@ -143,11 +176,16 @@ function Overview({ onSelect }: { onSelect: (slug: string) => void }) {
 function ProjectView({ project }: { project: Project }) {
   const Icon = project.icon;
   const href = appPath(project.slug);
+  const headerIcon = project.appIcon ? (
+    <ProjectIcon project={project} size={22} className="rounded" />
+  ) : (
+    <Icon size={16} strokeWidth={1.75} style={{ color: project.color }} />
+  );
 
   return (
     <>
       <header className="flex h-12 shrink-0 items-center gap-2 border-b border-[var(--hub-border)] bg-[var(--hub-surface)] px-4">
-        <Icon size={16} strokeWidth={1.75} style={{ color: project.color }} />
+        {headerIcon}
         <span className="font-medium">{project.name}</span>
         <span className="truncate text-xs text-[var(--hub-muted)]">{project.description}</span>
 
